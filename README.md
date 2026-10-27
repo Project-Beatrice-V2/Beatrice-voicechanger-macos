@@ -1,335 +1,235 @@
-<p align="center">
-  <img src="assets/logo.jpg" alt="Project Beatrice V2 Logo" width="200" />
-</p>
-
 <div align="center">
 
-# 🎙️ Project Beatrice V2
+<img src="docs/media/app-icon.png" alt="Beatrice app icon" width="128" />
 
-### Real-Time AI Voice Changer for macOS
+# Beatrice for Mac
 
-[![Version](https://img.shields.io/badge/version-2.0.0-brightgreen?style=for-the-badge)](https://github.com/satiricalguru/Beatrice-voicechanger/releases/tag/v2.0.0)
-[![macOS](https://img.shields.io/badge/macOS-12%2B-black?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/satiricalguru/Beatrice-voicechanger/releases)
-[![Electron](https://img.shields.io/badge/Electron-30-47848F?style=for-the-badge&logo=electron&logoColor=white)](https://www.electronjs.org/)
-[![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
+**A free, real-time AI voice changer that runs entirely on your Mac.**<br/>
+112 voices, a meme soundboard and a virtual microphone for Discord, Zoom, OBS and games. Download it, drag it in, talk.
 
-**Morph your voice in real-time** with AI-powered neural voice conversion — powered by the Beatrice 2.0.0 DSP engine, achieving sub-10ms latency across 112+ built-in voices.
+[![Download for Mac](https://img.shields.io/github/v/release/satiricalguru/Beatrice-voicechanger-mac?style=for-the-badge&label=Download%20for%20Mac&logo=apple&logoColor=white&color=000000&labelColor=000000)](https://github.com/satiricalguru/Beatrice-voicechanger-mac/releases/latest)
+[![Website](https://img.shields.io/badge/Website-project--beatrice.vercel.app-7c8cff?style=for-the-badge&labelColor=000000)](https://project-beatrice.vercel.app)
+[![Stars across all Beatrice repos](https://img.shields.io/endpoint?url=https%3A%2F%2Fproject-beatrice.vercel.app%2Fapi%2Fstars%3Fformat%3Dshields&style=for-the-badge)](https://github.com/Project-Beatrice-V2)
 
-[📥 Download v2.0.0](https://github.com/satiricalguru/Beatrice-voicechanger/releases/tag/v2.0.0) · [🪟 Windows Version](https://github.com/satiricalguru/BeatriceVST-voicechanger.git) · [🐛 Report Bug](https://github.com/satiricalguru/Beatrice-voicechanger/issues)
+![Apple Silicon](https://img.shields.io/badge/Apple%20Silicon-M1%20→%20M4-a887dc?style=flat-square&labelColor=000000)
+![macOS](https://img.shields.io/badge/macOS-11%2B-a887dc?style=flat-square&labelColor=000000)
+![Runs offline](https://img.shields.io/badge/runs-100%25%20offline-3dffa8?style=flat-square&labelColor=000000)
+![License](https://img.shields.io/badge/license-MIT-a1a1aa?style=flat-square&labelColor=000000)
+
+[Download](https://github.com/satiricalguru/Beatrice-voicechanger-mac/releases/latest) · [Website](https://project-beatrice.vercel.app) · [Windows version](https://github.com/satiricalguru/Beatrice-voicechanger-windows) · [Report a bug](https://github.com/satiricalguru/Beatrice-voicechanger-mac/issues/new)
+
+<br/>
+
+<img src="docs/media/app-demo.gif" alt="Beatrice in action: picking voices, the soundboard, the sound library and switching accent colours" width="100%" />
+
+<sub>▶︎ <a href="docs/media/app-demo.mp4">Watch the demo in HD</a></sub>
 
 </div>
 
 ---
 
-## ✨ What's New in v2.0.0
+## ✨ Why Beatrice
 
-| 🔧 Fix | Description |
-|--------|-------------|
-| 🗂️ **Writable Path Migration** | Custom models & soundboard audio now stored in OS user data — fully compatible with packaged `.app` bundles |
-| 🖼️ **Image Loading Fixed** | Speaker portraits now resolve correctly via `file://` URLs in both dev and production environments |
-| 📦 **50MB Smaller Installer** | Eliminated duplicate model packaging; assets live exclusively in `app.asar.unpacked` |
-| 🧠 **Custom Model Loading Fix** | Python backend `UnboundLocalError` crash on custom model load is now resolved |
-| 🔄 **Automatic Model Migration** | Legacy `custom_models/` in project root auto-migrated to `userData` on startup |
+- 🎙️ **Real-time, on-device.** The Beatrice neural engine converts your voice live with about 10 ms of latency. Your audio never leaves your Mac.
+- 📦 **Nothing to set up.** Python, the audio engine and every voice are inside the app. No Terminal, no Homebrew, no pip.
+- 🔌 **Virtual mic included.** On first launch Beatrice installs [BlackHole](https://existential.audio/blackhole/) for you and selects it, so Discord, Zoom and OBS can hear your new voice straight away.
+- 🎭 **112 voices + your own.** Three built-in model sets, plus any Beatrice-compatible model you import.
+- 🔊 **A soundboard that's ready to go.** 23 sounds from the Aurora pack are on it from the start, with 100+ more in the library, each with artwork of what it is.
+- 🎨 **Looks the part.** A black-and-white "Aurora Void" design, six accent colours, light and dark mode, in English, 日本語 and 中文.
 
----
-
-## 🚀 Features
+## 📸 Tour
 
 <table>
-<tr>
-<td width="50%">
-
-### 🎤 Voice Conversion
-- **112+ voices** across 3 built-in model sets
-- **Dynamic model switching** at runtime — no restart required
-- Real-time DSP pipeline at **16 kHz / ~10ms latency**
-- Pitch shift: **−12 to +12 semitones**
-- Formant shift: **−1.5 to +1.5**
-- Noise gate for background suppression
-- Import **custom voice models** from ZIP archives
-
-</td>
-<td width="50%">
-
-### 🔊 Soundboard
-- Upload **WAV, MP3, FLAC** and more
-- One-click playback through your output device
-- **Hear Yourself** monitoring mode
-- Inline rename & delete
-- Drag-and-drop support
-- Custom cover image per sound
-
-</td>
-</tr>
-<tr>
-<td>
-
-### 🔧 Audio Routing
-- Independent **Input**, **Output**, and **Monitor** device selection
-- PortAudio-backed device enumeration
-- Real-time **dB input/output level meters**
-- Works seamlessly with virtual audio devices (BlackHole, VB-Cable)
-
-</td>
-<td>
-
-### 🎨 Themes & Languages
-- **6 handcrafted themes** — Obsidian, Midnight, Teal, Amber, Rose, Cyberpunk
-- **Light & Dark mode** per theme
-- **3 languages** — English, Japanese, Chinese
-- Beautiful animated speaker selection grid
-
-</td>
-</tr>
+  <tr>
+    <td width="50%"><img src="docs/media/app-voices.jpg" alt="Voice Models: a grid of 100 JVS voices with the engine live" /></td>
+    <td width="50%"><img src="docs/media/app-soundboard.jpg" alt="Soundboard with the Aurora sound pack and artwork" /></td>
+  </tr>
+  <tr>
+    <td><b>Voice Models</b><br/>Pick from 112 voices and filter by style. The power button goes LIVE in one click.</td>
+    <td><b>Soundboard</b><br/>Play memes and effects into your call. Give any sound a global keyboard shortcut.</td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/media/app-library.jpg" alt="Library showing anime sounds with character artwork" /></td>
+    <td width="50%"><img src="docs/media/app-settings.jpg" alt="Settings: colour mode and six accent colours" /></td>
+  </tr>
+  <tr>
+    <td><b>Library</b><br/>100+ curated sounds in 11 categories, plus Wikimedia Commons search. One click adds a sound to your board.</td>
+    <td><b>Settings</b><br/>Light, dark or system mode, six accent colours and three languages.</td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/media/app-voices-light.jpg" alt="Light mode with the teal accent" /></td>
+    <td width="50%"><img src="docs/media/app-soundboard-rose.jpg" alt="Soundboard with the rose accent" /></td>
+  </tr>
+  <tr>
+    <td><b>Light mode</b> with the Teal accent.</td>
+    <td><b>Accents</b> recolour buttons, highlights and the voice glow.</td>
+  </tr>
 </table>
 
----
+## 🚀 Get started
 
-## 🎭 Voice Models
+1. **Download** `Beatrice.Voice.Changer-2.2.0-arm64.dmg` from the [latest release](https://github.com/satiricalguru/Beatrice-voicechanger-mac/releases/latest).
+2. **Open the DMG and drag** Beatrice into **Applications**.
+3. **Open Beatrice.** The first time, macOS says it can't check the app: click **Done**, open **System Settings → Privacy & Security**, and click **Open Anyway**. You do this once.
+4. **Enter your Mac password** when Beatrice asks to install BlackHole, the virtual microphone. Beatrice selects it as its output for you.
+5. **Allow the microphone**, press the power button so it says **LIVE**, and pick a voice.
+6. In **Discord, Zoom or OBS**, choose **BlackHole 2ch** as the microphone.
 
-| Model | Voices | Description |
-|-------|--------|-------------|
-| 🎌 **JVS Corpus** | 100 | Japanese Voice Corpus — broad range of voice styles |
-| ⭐ **Official Model 1** | 4 | Tsukuyomichan, Tokinashigure, OLUNE, Fukuyomichan |
-| 📼 **Classic Old TTS** | 8 | Retro synthesized voice styles |
-| 🔧 **Custom Models** | ∞ | Import your own Beatrice-compatible paraphernalia ZIP |
+> [!TIP]
+> Turn on **Hear Yourself** and pick your headphones as the monitor to hear your converted voice while you talk.
 
----
+> [!NOTE]
+> **Requires a Mac with Apple Silicon (M1, M2, M3, M4 or later) and macOS 11 or later.** The Beatrice voice engine is only built for Apple Silicon, so Intel Macs can't run it.
 
-## 📸 Screenshots
+<details>
+<summary><b>Why does macOS ask me to "Open Anyway"?</b></summary>
+<br/>
 
-<p align="center">
-  <img alt="Voice Models — JVS Corpus (100 voices) with category filters" src="assets/screenshot_voice_models.png" width="100%"/>
-  <br/><sub>🎤 <b>Voice Models</b> — Browse 100+ JVS voices with animated avatars and category filters</sub>
-</p>
+Beatrice is free and isn't signed with a paid Apple Developer ID, so macOS can't check it with Apple the first time. The app is signed so it opens normally once you allow it, and macOS remembers your choice.
+</details>
 
-<p align="center">
-  <img alt="Soundboard — Upload and trigger audio clips" src="assets/screenshot_soundboard.png" width="100%"/>
-  <br/><sub>🔊 <b>Soundboard</b> — Upload audio clips and trigger them with a single click</sub>
-</p>
+<details>
+<summary><b>I skipped the BlackHole password prompt</b></summary>
+<br/>
 
-<p align="center">
-  <img alt="Library — Featured presets and Wikimedia sound effects (Japanese UI)" src="assets/screenshot_library.png" width="100%"/>
-  <br/><sub>📚 <b>Library</b> — 100+ curated sound presets with multilingual UI support (Japanese shown)</sub>
-</p>
+Beatrice asks again the next time you open it. You can also install BlackHole yourself from [existential.audio/blackhole](https://existential.audio/blackhole/) and click **Refresh** under Audio Routing.
+</details>
 
-<p align="center">
- <img width="2904" height="1606" alt="image" src="https://github.com/user-attachments/assets/951329b7-41be-4ea1-8d3a-66ef4b38b330" />
-  <br/><sub>⚙️ <b>Settings</b> — 6 handcrafted themes, light/dark mode, and 3 languages (Chinese shown)</sub>
-</p>
+<details>
+<summary><b>Coming from v2.0.x and stuck on "Waiting for backend…"?</b></summary>
+<br/>
 
----
+Install the latest version. Since v2.1.0 everything the backend needs is inside the app, so the Terminal steps from the old <a href="docs/MAC_SETUP.md">setup guide</a> aren't needed anymore.
+</details>
 
-## 📥 Installation
+## 🎭 Voices
 
-### Option A — Download the DMG (Recommended)
+| Model | Voices | What's inside |
+|:--|:--:|:--|
+| **JVS Corpus (100 Voices)** | 100 | A wide range of speakers from the Japanese Versatile Speech corpus |
+| **Official Model (3 Voices)** | 4 | Tsukuyomi-chan, Tokinashi Shigure, OLUNE and Fukuyomi-chan |
+| **Classic Old TTS (8 Voices)** | 8 | Retro synthesised voices |
+| **Custom models** | ∞ | Import any Beatrice-compatible model as a ZIP |
 
-Download **`Beatrice.Voice.Changer-2.1.1-arm64.dmg`** from the [latest release](https://github.com/Project-Beatrice-V2/Beatrice-voicechanger-macos/releases/latest), open it, and drag **Beatrice Voice Changer** into **Applications**. That's it: Python and the audio packages are built into the app, so there's nothing else to install.
+**Import your own:** open the model menu, choose **Upload Custom Model** and pick a ZIP that contains a `beatrice_paraphernalia_*` folder. Train one with the [Beatrice trainer for Mac](https://github.com/Project-Beatrice-V2/Beatrice-trainer-macos) or [in Colab](https://github.com/Project-Beatrice-V2/Beatrice-colab), or grab a ready-made one from [Beatrice-voice-models](https://github.com/Project-Beatrice-V2/Beatrice-voice-models).
 
-> **Requires a Mac with Apple Silicon (M1/M2/M3/M4).** The Beatrice voice engine is only available for Apple Silicon, so Intel Macs aren't supported.
+## 🎛️ Controls
 
-> **First launch:** If macOS says it can't verify the app, click **Done**, then go to **System Settings → Privacy & Security** and click **Open Anyway**. You only do this once.
+| Control | What it does |
+|:--|:--|
+| **Power button** | Switches between **LIVE** (converting) and **BYPASSED** (your normal voice) |
+| **Input microphone** | The mic you talk into |
+| **Output device** | Where the converted voice goes, normally **BlackHole 2ch** |
+| **Hear Yourself** + **Monitor** | Plays your converted voice to your headphones |
+| **Pitch shift** | ±12 semitones |
+| **Formant shift** | ±1.5, changes the character of the voice |
+| **Noise gate** | Mutes input below a threshold (0 = off, the most natural sound) |
+| **Volume** | Output gain, 0–200% |
 
-> **Coming from v2.0.x and stuck on "Waiting for backend…"?** Just install v2.1.0. The Terminal steps from the old [setup guide](docs/MAC_SETUP.md) aren't needed anymore.
+## 🧩 How it works
 
-### Option B — Build from Source
+```mermaid
+flowchart LR
+  mic([🎙️ Your mic]) --> engine
+  subgraph app [Beatrice.app]
+    ui[Electron UI] -- "REST · 127.0.0.1:5005" --> backend[Python audio backend<br/>bundled runtime]
+    backend --> engine[Beatrice 2.0 engine<br/>VST3 · on-device]
+  end
+  engine --> bh([BlackHole 2ch]) --> apps([Discord · Zoom · OBS · games])
+  engine -. Hear Yourself .-> phones([🎧 Headphones])
+```
+
+<details>
+<summary><b>Local REST API</b></summary>
+<br/>
+
+The backend listens on `http://127.0.0.1:5005`:
+
+| Endpoint | Description |
+|:--|:--|
+| `GET /status` | Bypass state, meters, devices and parameters |
+| `GET /devices` | All audio devices |
+| `GET /set_config?<param>=<value>` | Change `bypass`, `speaker_index`, `pitch_shift`, `formant_shift`, `volume`, `gate_threshold`, `input_device_id`, `output_device_id`, `monitor_device_id` or `hear_yourself` |
+| `GET /set_model?model=<name>` | Switch model: `jvs`, `official_1`, `old_tts` or `custom:<name>` |
+| `GET /play_sound?file_path=<path>&hear_yourself=<bool>` | Play a soundboard file |
+| `GET /stop_sound` | Stop soundboard playback |
+</details>
+
+## 🛠️ Build from source
+
+Needs Node.js 18+ and an Apple Silicon Mac.
 
 ```bash
-# 1. Clone the repository
-git clone https://github.com/satiricalguru/Beatrice-voicechanger.git
-cd Beatrice-voicechanger
-
-# 2. Install Python audio dependencies
-pip3 install -r requirements.txt
-
-# 3. Install Node dependencies
+git clone https://github.com/satiricalguru/Beatrice-voicechanger-mac.git
+cd Beatrice-voicechanger-mac
 npm install
-
-# 4. Launch in development mode
-npm run dev
-
-# 5. (Optional) Build a production .dmg installer
 npm run dist
 ```
 
----
+`npm run dist` downloads a standalone Python, installs the audio packages into it and builds `dist/Beatrice Voice Changer-<version>-arm64.dmg`. To run it without packaging:
 
-## 🎛️ How to Use
-
-### First-Time Setup — Virtual Microphone
-
-To route your morphed voice into apps like **Discord**, **Zoom**, or **OBS**, you need a virtual audio driver:
-
-| Platform | Tool | Download |
-|----------|------|----------|
-| 🍎 macOS | BlackHole 2ch | [existential.audio/blackhole](https://existential.audio/blackhole/) |
-| 🪟 Windows | VB-Cable | [vb-audio.com/Cable](https://vb-audio.com/Cable/) |
-
-**Step-by-step:**
-
-1. Install your virtual audio driver (e.g., BlackHole 2ch)
-2. Open **Project Beatrice** and set your physical mic as the **Input Microphone**
-3. Set the **Output Device** to the virtual audio driver (e.g., `BlackHole 2ch`)
-4. In Discord/Zoom/OBS, set the **Input** to `BlackHole 2ch`
-5. Toggle the **power button** to go **LIVE** 🟢
-6. Enable **Hear Yourself** and select your headphones to monitor in real-time
-
-> 💡 **Tip:** Set the **Noise Gate** to `0.000` for the smoothest, most natural voice conversion.
-
----
-
-## 🎮 Controls Reference
-
-| Control | Description |
-|---------|-------------|
-| ⏻ **Power Button** | Toggle LIVE (converting) ↔ BYPASSED (raw mic) |
-| 🎙️ **Input Microphone** | Select your physical mic |
-| 🔈 **Output Device** | Where the converted voice is sent |
-| 👂 **Hear Yourself** | Route output to a monitor device for local preview |
-| 🚪 **Noise Gate** | Silence input below this threshold (0.000 = off) |
-| 🎵 **Pitch Shift** | Raise or lower pitch by ±12 semitones |
-| 🔠 **Formant Shift** | Modify vocal tract character (±1.5) |
-| 🔊 **Output Volume** | Final output gain (0–200%) |
-
----
-
-## 🧩 Custom Voice Models
-
-You can import custom Beatrice-compatible voice models:
-
-1. In the **Voice Model** dropdown, select **Upload Custom Model**
-2. Choose a ZIP file containing a valid `beatrice_paraphernalia_*` folder
-3. The model will be extracted to your user data directory and appear in the dropdown immediately
-
-**Custom model folder structure:**
-```
-my_model/
-├── phone_extractor.bin
-├── pitch_estimator.bin
-├── waveform_generator.bin
-├── embedding_setter.bin
-├── speaker_embeddings.bin
-├── model.toml
-└── avatar.png         ← optional portrait image
+```bash
+npm run bundle-python
+BEATRICE_PYTHON="$PWD/build/python/arm64/bin/python3" npx electron .
 ```
 
----
-
-## 🏗️ Architecture
-
-```
-┌──────────────────────────────────────────────────┐
-│                  Electron UI                     │
-│       index.html + index.css + renderer.js       │
-│  ┌──────────────────┐  ┌────────────────────┐    │
-│  │  Voice Grid      │  │  Soundboard        │    │
-│  │  (112+ voices)   │  │  (upload → play)   │    │
-│  └──────────────────┘  └────────────────────┘    │
-└──────────────────────┬───────────────────────────┘
-                       │ HTTP REST (127.0.0.1:5005)
-                       ▼
-┌──────────────────────────────────────────────────┐
-│              Python Audio Backend                │
-│               beatrice_audio.py                  │
-│  ┌────────────────────────────────────────────┐  │
-│  │  PortAudio I/O (sounddevice)               │  │
-│  │  Beatrice VST3 ctypes wrapper              │  │
-│  │  Phone Extractor → Pitch → Waveform DSP    │  │
-│  │  Soundboard playback (soundfile)           │  │
-│  └────────────────────────────────────────────┘  │
-└──────────────────────┬───────────────────────────┘
-                       │ ctypes CDLL
-                       ▼
-┌──────────────────────────────────────────────────┐
-│        Beatrice 2.0.0-rc.2 VST3 Library          │
-│        + beatrice_paraphernalia_*/               │
-│          (model weights & speaker embeddings)    │
-└──────────────────────────────────────────────────┘
-```
-
----
-
-## 📁 Project Structure
+<details>
+<summary><b>Project layout</b></summary>
+<br/>
 
 ```
-Beatrice-voicechanger/
-├── main.js                              # Electron main process + IPC handlers
-├── renderer.js                          # Frontend logic (voices, soundboard, settings)
-├── index.html                           # UI layout
-├── index.css                            # Design system (6 themes × light/dark)
-├── beatrice_audio.py                    # Python audio backend + REST API
-├── beatrice_loader.py                   # VST3 binary loader + ctypes bindings
-├── package.json                         # Node/Electron config
-├── requirements.txt                     # Python dependencies
-├── icon.png                             # App icon
-├── assets/                              # Project assets (logo, etc.)
-├── custom_models/                       # Your imported custom voice models
-├── soundboard_audio/                    # Uploaded soundboard audio files
-├── beatrice_2.0.0-rc.2.vst3/           # Native Beatrice DSP shared library
-├── beatrice_paraphernalia_jvs/          # JVS Corpus (100 voices)
-├── beatrice_paraphernalia_official_1/   # Official Model 1 (4 voices)
-└── beatrice_paraphernalia_old_tts/      # Classic Old TTS (8 voices)
+main.js                  Electron main process: backend, BlackHole install, shortcuts
+renderer.js              UI logic: voices, soundboard, library, settings
+index.html / index.css   Layout and the Aurora Void design system
+beatrice_audio.py        Python audio backend and REST API
+beatrice_loader.py       Loads the Beatrice VST3 engine through ctypes
+beatrice_2.0.0-rc.2.vst3 The Beatrice engine (Apple Silicon)
+beatrice_paraphernalia_* Built-in voice models
+assets/sounds            The Aurora sound pack (works offline)
+assets/sound-art         Sound artwork, made by tools/sound-art
+vendor/                  BlackHole installer (GPL-3.0)
+scripts/                 Python bundling and ad-hoc signing for the build
 ```
+</details>
 
----
+## 🗺️ Roadmap
 
-## ⚙️ Requirements
+- [x] Works out of the box: Python and the engine are inside the app
+- [x] Automatic virtual microphone setup
+- [x] Aurora sound pack and artwork for every sound
+- [x] Redesigned interface with accent colours and light mode
+- [ ] Notarised build, so the first launch doesn't need "Open Anyway"
+- [ ] Intel Mac support (needs an Intel build of the Beatrice engine)
 
-| Dependency | Version | Purpose |
-|---|---|---|
-| **macOS** | 12 Monterey+ | Apple Silicon (M1/M2/M3/M4) |
-| **Node.js** | 18+ | Electron shell |
-| **Python** | 3.9+ | Audio backend (bundled in the DMG; only needed to build from source) |
-| `sounddevice` | 0.4.6+ | PortAudio I/O |
-| `numpy` | 1.24+ | DSP math |
-| `soundfile` | 0.12+ | Audio file decoding |
+## 🌐 The Beatrice family
 
-> **Note:** The Beatrice VST3 library is a **macOS-only** signed binary. For Windows support, see the [BeatriceVST-voicechanger](https://github.com/satiricalguru/BeatriceVST-voicechanger) repository.
+| | |
+|:--|:--|
+| 🪟 [Beatrice for Windows](https://github.com/satiricalguru/Beatrice-voicechanger-windows) | The same app for Windows 10 and 11 |
+| 🌍 [Website](https://project-beatrice.vercel.app) | Downloads, guides and voice samples |
+| 🧠 [Trainer for Mac](https://github.com/Project-Beatrice-V2/Beatrice-trainer-macos) · [Colab](https://github.com/Project-Beatrice-V2/Beatrice-colab) | Train your own voice model |
+| 📂 [Dataset Web UI](https://github.com/Project-Beatrice-V2/Beatrice-dataset-webui-macos) | Prepare recordings for training |
+| 🎭 [Voice models](https://github.com/Project-Beatrice-V2/Beatrice-voice-models) | Ready-made models to import |
 
----
+## 🙏 Credits
 
-## 🔌 API Reference
-
-The Python backend exposes a local REST API on `http://127.0.0.1:5005`:
-
-| Endpoint | Method | Description |
-|---|---|---|
-| `/status` | GET | Current state: bypass, meters, devices, parameters |
-| `/devices` | GET | List all available PortAudio devices |
-| `/set_config?<param>=<value>` | GET | Update a real-time parameter |
-| `/set_model?model=<name>` | GET | Switch active model (`jvs`, `official_1`, `old_tts`, `custom:<name>`) |
-| `/play_sound?file_path=<path>&hear_yourself=<bool>` | GET | Play a soundboard audio file |
-| `/stop_sound` | GET | Stop current soundboard playback |
-
-**`/set_config` parameters:**
-`bypass` · `speaker_index` · `pitch_shift` · `formant_shift` · `volume` · `gate_threshold` · `input_device_id` · `output_device_id` · `monitor_device_id` · `hear_yourself`
-
----
-
-## 🙏 Credits & Acknowledgements
-
-- 🔬 **Beatrice DSP Engine** — [prj-beatrice/beatrice-vst](https://github.com/prj-beatrice/beatrice-vst)
-- 🎙️ **Voice Changer Inspiration** — [w-okada/voice-changer](https://github.com/w-okada/voice-changer)
-- 🎌 **JVS Corpus** — [Shinnosuke Takamichi, UTokyo](https://sites.google.com/site/shinnosuketakamichi/research-topics/jvs_corpus) *(non-commercial use only)*
-- 💻 **Developed by** [Satirical Guru](https://github.com/satiricalguru) · Claude · Antigravity
-
----
+- **Beatrice engine** by [prj-beatrice](https://github.com/prj-beatrice/beatrice-vst)
+- **JVS corpus** by [Shinnosuke Takamichi et al., University of Tokyo](https://sites.google.com/site/shinnosuketakamichi/research-topics/jvs_corpus) (non-commercial use only)
+- **BlackHole** by [Existential Audio](https://github.com/ExistentialAudio/BlackHole) (GPL-3.0), bundled unmodified
+- **Aurora sound pack** from [Aurora Voice Changer](https://github.com/satiricalguru/Aurora-Voicechanger)
+- **Sound artwork** from Wikipedia/Wikimedia Commons, AniList and [Simple Icons](https://simpleicons.org) (CC0)
+- Inspired by [w-okada/voice-changer](https://github.com/w-okada/voice-changer)
+- Made by [Satirical Guru](https://github.com/satiricalguru)
 
 ## 📜 License
 
-**MIT License** — Copyright © 2026 Jatin Pandey
-
-The voice changer UI and Python backend are MIT-licensed. The Beatrice DSP engine is licensed separately under the [prj-beatrice project](https://github.com/prj-beatrice/beatrice-vst).
-
-> ⚠️ **JVS Corpus:** Speaker data is licensed for **non-commercial use only**. See `LICENSE` and `Contributors.txt` for full details.
-
----
+The app and backend are **MIT** licensed, © 2026 Jatin Pandey. The Beatrice engine, the JVS voices and BlackHole have their own licences (see [Credits](#-credits), `LICENSE` and `contributors.txt`). The JVS voice data is for **non-commercial use only**.
 
 <div align="center">
+<br/>
 
-**Built with ❤️ using** Electron · Python · Beatrice DSP · PortAudio · JVS Corpus
+**If Beatrice made you laugh on a call, ⭐ star the repo, it really helps.**
 
-⭐ If you enjoy Project Beatrice, please give it a star on GitHub!
+<a href="#beatrice-for-mac">Back to top ↑</a>
 
 </div>

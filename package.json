@@ -1,13 +1,13 @@
 {
   "name": "beatrice-voice-changer",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "Real-time AI voice changer powered by the Beatrice DSP engine and JVS corpus speakers",
   "main": "main.js",
   "author": "Jatin Pandey <satiricalguru>",
-  "homepage": "https://github.com/satiricalguru/beatrice-voicechanger",
+  "homepage": "https://github.com/Project-Beatrice-V2/Beatrice-voicechanger-macos",
   "repository": {
     "type": "git",
-    "url": "https://github.com/satiricalguru/beatrice-voicechanger.git"
+    "url": "https://github.com/Project-Beatrice-V2/Beatrice-voicechanger-macos.git"
   },
   "scripts": {
     "start": "electron .",
@@ -57,7 +57,10 @@
       "beatrice_paraphernalia_jvs/**/*",
       "beatrice_paraphernalia_official_1/**/*",
       "beatrice_paraphernalia_old_tts/**/*",
-      "beatrice_2.0.0-rc.2.vst3/**/*"
+      "beatrice_2.0.0-rc.2.vst3/**/*",
+      "fonts/**/*",
+      "assets/sounds/**/*",
+      "assets/sound-art/**/*"
     ],
     "mac": {
       "category": "public.app-category.music",
@@ -73,7 +76,10 @@
       "darkModeSupport": true,
       "hardenedRuntime": false,
       "gatekeeperAssess": false,
-      "minimumSystemVersion": "11.0"
+      "minimumSystemVersion": "11.0",
+      "extendInfo": {
+        "NSMicrophoneUsageDescription": "Beatrice listens to your microphone to change your voice in real time. Audio never leaves your Mac."
+      }
     },
     "dmg": {
       "title": "Beatrice Voice Changer",
@@ -97,6 +103,13 @@
       }
     },
     "extraResources": [
+      {
+        "from": "vendor",
+        "to": "vendor",
+        "filter": [
+          "*.pkg"
+        ]
+      },
       {
         "from": "build/python/${arch}",
         "to": "python",

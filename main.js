@@ -1,7 +1,7 @@
 'use strict';
 
 const { app, BrowserWindow, nativeImage, ipcMain, globalShortcut, session, dialog, clipboard, shell } = require('electron');
-const { spawn, execFileSync } = require('child_process');
+const { spawn, execFile, execFileSync } = require('child_process');
 const path                   = require('path');
 const fs                     = require('fs');
 
@@ -10,6 +10,7 @@ const ICON_PATH = path.join(__dirname, 'icon.png');
 let mainWindow    = null;
 let pythonProcess = null;
 let appQuitting   = false;
+let backendRestarting = false;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -38,6 +39,7 @@ function createWindow() {
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
     mainWindow.maximize();
+    ensureVirtualMic();
   });
 
   mainWindow.on('closed', () => {
@@ -127,6 +129,7 @@ function startBackend() {
   pythonProcess.on('close', code => {
     console.log('[Beatrice] Python backend exited with code', code);
     pythonProcess = null;
+    if (backendRestarting) { backendRestarting = false; startBackend(); return; }
     if (!appQuitting && code !== 0) showBackendError(stderrTail);
   });
 }
@@ -139,6 +142,12 @@ function resolvePython() {
     clearQuarantine(path.join(process.resourcesPath, 'python'));
     clearQuarantine(path.join(process.resourcesPath, 'app.asar.unpacked'));
     return { cmd: bundled, args: [] };
+  }
+
+  // Development: BEATRICE_PYTHON points at a specific interpreter, e.g. the
+  // runtime from scripts/bundle-python.sh (build/python/arm64/bin/python3).
+  if (!app.isPackaged && process.env.BEATRICE_PYTHON) {
+    return { cmd: process.env.BEATRICE_PYTHON, args: [] };
   }
 
   // Development (`npm run dev`): use a system Python. Apps launched from
@@ -168,6 +177,47 @@ function clearQuarantine(dir) {
   }
 }
 
+// ── Virtual microphone (BlackHole) ────────────────────────────────────────────
+// Apps like Discord and Zoom can only hear Beatrice through a virtual audio
+// device. BlackHole (GPL-3.0, Existential Audio) ships inside the app as its
+// signed, notarized installer; on a launch where it is missing we install it.
+// macOS asks for the user's password once — that prompt is the only step.
+const BLACKHOLE_DRIVER = '/Library/Audio/Plug-Ins/HAL/BlackHole2ch.driver';
+const BLACKHOLE_PKG = 'BlackHole2ch-0.7.1.pkg';
+
+function ensureVirtualMic() {
+  if (process.platform !== 'darwin' || fs.existsSync(BLACKHOLE_DRIVER)) return;
+  const pkg = app.isPackaged
+    ? path.join(process.resourcesPath, 'vendor', BLACKHOLE_PKG)
+    : path.join(__dirname, 'vendor', BLACKHOLE_PKG);
+  if (!fs.existsSync(pkg)) {
+    console.error('[Beatrice] BlackHole installer missing:', pkg);
+    return;
+  }
+  // The package expects a reboot before Core Audio loads the driver; restarting
+  // coreaudiod (launchd brings it straight back) loads it now instead.
+  const script = 'do shell script "/usr/sbin/installer -pkg " & quoted form of '
+    + JSON.stringify(pkg) + ' & " -target / && /usr/bin/killall coreaudiod" with prompt '
+    + JSON.stringify('Beatrice is installing BlackHole, the virtual microphone that lets Discord, Zoom and other apps hear your converted voice.')
+    + ' with administrator privileges';
+  console.log('[Beatrice] Installing BlackHole virtual microphone…');
+  execFile('/usr/bin/osascript', ['-e', script], { timeout: 5 * 60 * 1000 }, (err) => {
+    if (err) {
+      // -128 means the user cancelled the password prompt; we ask again on
+      // the next launch.
+      console.log('[Beatrice] BlackHole was not installed:', err.message.trim());
+      return;
+    }
+    console.log('[Beatrice] BlackHole installed');
+    // The audio engine lists devices once at start, so restart it (after Core
+    // Audio is back up) to see BlackHole, then let the window pick it.
+    setTimeout(() => {
+      if (pythonProcess) { backendRestarting = true; pythonProcess.kill('SIGTERM'); }
+      if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send('virtual-mic-installed');
+    }, 3000);
+  });
+}
+
 function showBackendError(details) {
   const message = 'The voice engine stopped unexpectedly.';
   const detail = 'Please quit Beatrice (⌘Q) and open it again. If this keeps happening, '
@@ -188,7 +238,20 @@ function showBackendError(details) {
 
 // ── App lifecycle ─────────────────────────────────────────────────────────────
 
+// Only one copy may run: a second one could not open the audio engine's port.
+if (!app.requestSingleInstanceLock()) {
+  app.quit();
+} else {
+  app.on('second-instance', () => {
+    if (!mainWindow) return;
+    if (mainWindow.isMinimized()) mainWindow.restore();
+    mainWindow.show();
+    mainWindow.focus();
+  });
+}
+
 app.whenReady().then(() => {
+  if (!app.hasSingleInstanceLock()) return;
   if (process.platform === 'darwin') {
     const icon = nativeImage.createFromPath(ICON_PATH);
     app.dock.setIcon(icon);
