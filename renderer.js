@@ -1197,6 +1197,8 @@ const I18N = {
     settings_reset_desc: 'Reset theme, soundboard, and preferences to defaults.',
     settings_reset_btn: 'Reset',
     power_label: 'Voice Changer',
+    power_off: 'Off · your normal voice',
+    power_live: 'Live · changing your voice',
     audio_routing: 'Audio Routing',
     input_controls: 'Input Controls',
     dsp_modifiers: 'DSP Modifiers',
@@ -1255,6 +1257,8 @@ const I18N = {
     settings_reset_desc: 'テーマ、サウンドボード、プリファレンスをデフォルトにリセットします。',
     settings_reset_btn: 'リセット',
     power_label: 'ボイスチェンジャー',
+    power_off: 'オフ・元の声',
+    power_live: 'ライブ・声を変換中',
     audio_routing: 'オーディオルーティング',
     input_controls: '入力コントロール',
     dsp_modifiers: 'DSPモディファイア',
@@ -1313,6 +1317,8 @@ const I18N = {
     settings_reset_desc: '将主题、声板和偏好设置重置为默认值。',
     settings_reset_btn: '重置',
     power_label: '变声器',
+    power_off: '关闭 · 原声',
+    power_live: '直播中 · 正在变声',
     audio_routing: '音频路由',
     input_controls: '输入控制',
     dsp_modifiers: 'DSP 修改器',
@@ -1375,9 +1381,6 @@ function loadSavedLanguage() {
 // ════════════════════════════════════════════════════════════
 // DOM REFERENCES
 // ════════════════════════════════════════════════════════════
-const powerToggleBtn       = document.getElementById('power-toggle');
-const bypassStatusEl       = document.getElementById('bypass-status');
-const powerLabelEl         = document.getElementById('power-label');
 
 const gateSlider           = document.getElementById('gate-slider');
 const gateValSpan          = document.getElementById('gate-val');
@@ -2314,40 +2317,16 @@ function selectSpeaker(index) {
   }
 }
 
-// ════════════════════════════════════════════════════════════
-// POWER TOGGLE
-// ════════════════════════════════════════════════════════════
-powerToggleBtn.addEventListener('click', () => {
-  voiceChangerBypass = !voiceChangerBypass;
-  applyBypassUI(voiceChangerBypass);
-  setBackendConfig({ bypass: voiceChangerBypass });
-});
-
 function applyBypassUI(bypass) {
+  // The power button in the floating bar is the only on/off control.
   const fcPowerBtn = document.getElementById('fc-power-btn');
-  if (bypass) {
-    powerToggleBtn.classList.add('active');
-    powerToggleBtn.classList.remove('live');
-    powerToggleBtn.setAttribute('aria-pressed', 'false');
-    bypassStatusEl.className  = 'bypass-indicator active';
-    bypassStatusEl.textContent = 'BYPASSED';
-    powerLabelEl.textContent  = 'BYPASSED';
-    if (fcPowerBtn) {
-      fcPowerBtn.classList.add('active');
-      fcPowerBtn.classList.remove('live');
-    }
-  } else {
-    powerToggleBtn.classList.remove('active');
-    powerToggleBtn.classList.add('live');
-    powerToggleBtn.setAttribute('aria-pressed', 'true');
-    bypassStatusEl.className  = 'bypass-indicator live';
-    bypassStatusEl.textContent = 'LIVE';
-    powerLabelEl.textContent  = 'LIVE';
-    if (fcPowerBtn) {
-      fcPowerBtn.classList.remove('active');
-      fcPowerBtn.classList.add('live');
-    }
-  }
+  if (!fcPowerBtn) return;
+  const dict = I18N[localStorage.getItem(STORAGE_KEY_LANG)] || I18N.en;
+  const stateKey = bypass ? 'power_off' : 'power_live';
+  fcPowerBtn.classList.toggle('active', bypass);
+  fcPowerBtn.classList.toggle('live', !bypass);
+  fcPowerBtn.setAttribute('aria-pressed', String(!bypass));
+  fcPowerBtn.title = `${dict.power_label || I18N.en.power_label}: ${dict[stateKey] || I18N.en[stateKey]}`;
 }
 
 // ════════════════════════════════════════════════════════════
@@ -2514,6 +2493,12 @@ async function loadAudioDevices() {
         selectedOut = foundVirtualOpt.value;
         localStorage.setItem('last_output_device_id', selectedOut);
       }
+    }
+
+    // Mac: BlackHole installed but not loaded by macOS yet; the main process
+    // offers to restart Core Audio (it checks the driver is really there).
+    if (process.platform === 'darwin' && ![...outputDeviceSelect.options].some(o => /blackhole/i.test(o.textContent))) {
+      ipcRenderer.send('virtual-mic-missing');
     }
 
     if ([...inputDeviceSelect.options].some(o => o.value === selectedIn)) {

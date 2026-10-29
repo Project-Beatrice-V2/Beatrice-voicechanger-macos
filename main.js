@@ -184,6 +184,41 @@ function clearQuarantine(dir) {
 // macOS asks for the user's password once — that prompt is the only step.
 const BLACKHOLE_DRIVER = '/Library/Audio/Plug-Ins/HAL/BlackHole2ch.driver';
 const BLACKHOLE_PKG = 'BlackHole2ch-0.7.1.pkg';
+let virtualMicBusy = false;   // an install or audio restart is in progress
+let audioReloadTried = false; // ask at most once per launch
+
+// macOS loads audio drivers only when Core Audio starts, so a BlackHole that
+// was installed without a restart sits on disk unseen by every app. Restarting
+// coreaudiod (launchd brings it straight back) loads it.
+function reloadCoreAudioThen(done) {
+  const script = 'do shell script "/usr/bin/killall coreaudiod" with prompt '
+    + JSON.stringify('Beatrice needs to restart macOS audio once so BlackHole shows up in Discord, Zoom and other apps.')
+    + ' with administrator privileges';
+  execFile('/usr/bin/osascript', ['-e', script], { timeout: 5 * 60 * 1000 }, (err) => {
+    if (err) { console.log('[Beatrice] Core Audio was not restarted:', err.message.trim()); return; }
+    done();
+  });
+}
+
+function afterVirtualMicReady() {
+  // The audio engine lists devices once at start, so restart it (after Core
+  // Audio is back up) to see BlackHole, then let the window pick it.
+  setTimeout(() => {
+    virtualMicBusy = false;
+    if (pythonProcess) { backendRestarting = true; pythonProcess.kill('SIGTERM'); }
+    if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send('virtual-mic-installed');
+  }, 3000);
+}
+
+// The window found no BlackHole device although the driver is installed.
+ipcMain.on('virtual-mic-missing', () => {
+  if (process.platform !== 'darwin' || virtualMicBusy || audioReloadTried) return;
+  if (!fs.existsSync(BLACKHOLE_DRIVER)) return; // ensureVirtualMic installs it
+  audioReloadTried = true;
+  virtualMicBusy = true;
+  reloadCoreAudioThen(afterVirtualMicReady);
+  setTimeout(() => { virtualMicBusy = false; }, 5 * 60 * 1000);
+});
 
 function ensureVirtualMic() {
   if (process.platform !== 'darwin' || fs.existsSync(BLACKHOLE_DRIVER)) return;
@@ -201,20 +236,18 @@ function ensureVirtualMic() {
     + JSON.stringify('Beatrice is installing BlackHole, the virtual microphone that lets Discord, Zoom and other apps hear your converted voice.')
     + ' with administrator privileges';
   console.log('[Beatrice] Installing BlackHole virtual microphone…');
+  virtualMicBusy = true;
   execFile('/usr/bin/osascript', ['-e', script], { timeout: 5 * 60 * 1000 }, (err) => {
     if (err) {
       // -128 means the user cancelled the password prompt; we ask again on
       // the next launch.
+      virtualMicBusy = false;
       console.log('[Beatrice] BlackHole was not installed:', err.message.trim());
       return;
     }
     console.log('[Beatrice] BlackHole installed');
-    // The audio engine lists devices once at start, so restart it (after Core
-    // Audio is back up) to see BlackHole, then let the window pick it.
-    setTimeout(() => {
-      if (pythonProcess) { backendRestarting = true; pythonProcess.kill('SIGTERM'); }
-      if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send('virtual-mic-installed');
-    }, 3000);
+    audioReloadTried = true;
+    afterVirtualMicReady();
   });
 }
 

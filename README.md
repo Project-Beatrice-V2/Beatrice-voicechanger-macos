@@ -68,7 +68,7 @@
 
 ## 🚀 Get started
 
-1. **Download** `Beatrice.Voice.Changer-2.2.0-arm64.dmg` from the [latest release](https://github.com/satiricalguru/Beatrice-voicechanger-mac/releases/latest).
+1. **Download** `Beatrice.Voice.Changer-2.2.1-arm64.dmg` from the [latest release](https://github.com/satiricalguru/Beatrice-voicechanger-mac/releases/latest).
 2. **Open the DMG and drag** Beatrice into **Applications**.
 3. **Open Beatrice.** The first time, macOS says it can't check the app: click **Done**, open **System Settings → Privacy & Security**, and click **Open Anyway**. You do this once.
 4. **Enter your Mac password** when Beatrice asks to install BlackHole, the virtual microphone. Beatrice selects it as its output for you.
