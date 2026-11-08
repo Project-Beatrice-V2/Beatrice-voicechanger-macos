@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  package:
+    name: macOS package
+    runs-on: macos-15
+    timeout-minutes: 35
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - name: Check JavaScript and Python syntax
+        shell: bash
+        run: |
+          node --check main.js
+          node --check renderer.js
+          python -m py_compile beatrice_audio.py beatrice_loader.py tools/sound-art/fetch.py
+          node --check scripts/adhoc-sign.js
+          bash -n scripts/bundle-python.sh
+      - run: npm ci
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+      - name: Fetch and verify the locked Electron runtime
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version=$(node -p "require('./package-lock.json').packages['node_modules/electron'].version")
+          archive="electron-v$version-darwin-arm64.zip"
+          gh release download "v$version" --repo electron/electron --pattern "$archive" \
+            --pattern SHASUMS256.txt --dir build/ci-electron
+          python - "$archive" <<'PYTHON'
+          import hashlib
+          from pathlib import Path
+          import sys
+
+          cache = Path('build/ci-electron')
+          name = sys.argv[1]
+          expected = dict(
+              (filename.lstrip('*'), digest)
+              for digest, filename in (line.split() for line in (cache / 'SHASUMS256.txt').read_text().splitlines())
+          )[name]
+          with (cache / name).open('rb') as archive:
+              actual = hashlib.file_digest(archive, 'sha256').hexdigest()
+          if actual != expected:
+              raise SystemExit(f'Electron checksum mismatch for {name}')
+          PYTHON
+          unzip -q "build/ci-electron/$archive" -d build/ci-electron/runtime
+      - name: Build local packages
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+          GH_TOKEN: ${{ github.token }}
+        run: npm run dist -- --config.electronDist=build/ci-electron/runtime
+
+  dependency-review:
+    name: Dependency review
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+        with:
+          fail-on-severity: high
