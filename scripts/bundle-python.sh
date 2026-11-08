@@ -14,12 +14,25 @@ PY_MINOR="3.12"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT="$ROOT/build/python"
 CACHE="$ROOT/build/python-cache"
-BASE_URL="https://github.com/astral-sh/python-build-standalone/releases/download/$PBS_TAG"
+PBS_REPO="astral-sh/python-build-standalone"
+BASE_URL="https://github.com/$PBS_REPO/releases/download/$PBS_TAG"
 
 mkdir -p "$OUT" "$CACHE"
 
+download_release_asset() {
+  local asset="$1" destination="$2"
+  if curl -fsSL "$BASE_URL/${asset//+/%2B}" -o "$destination.part"; then
+    mv "$destination.part" "$destination"
+  elif command -v gh >/dev/null; then
+    gh release download "$PBS_TAG" --repo "$PBS_REPO" --pattern "$asset" --output "$destination.part" --clobber
+    mv "$destination.part" "$destination"
+  else
+    return 1
+  fi
+}
+
 if [ ! -f "$CACHE/SHA256SUMS-$PBS_TAG" ]; then
-  curl -fsSL "$BASE_URL/SHA256SUMS" -o "$CACHE/SHA256SUMS-$PBS_TAG"
+  download_release_asset SHA256SUMS "$CACHE/SHA256SUMS-$PBS_TAG"
 fi
 
 build_arch() {
@@ -33,8 +46,7 @@ build_arch() {
   local tarball="cpython-$PY_VERSION+$PBS_TAG-$triple-install_only.tar.gz"
   if [ ! -f "$CACHE/$tarball" ]; then
     echo "[bundle-python] downloading $tarball"
-    curl -fsSL "$BASE_URL/${tarball//+/%2B}" -o "$CACHE/$tarball.part"
-    mv "$CACHE/$tarball.part" "$CACHE/$tarball"
+    download_release_asset "$tarball" "$CACHE/$tarball"
   fi
 
   local expected actual
